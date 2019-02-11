@@ -1,0 +1,28 @@
+version: '2'
+services:
+  app:
+    build:
+      context: ./php
+    command: /sleep.sh 5 php /app/app/console server:run 0.0.0.0:8000
+    volumes:
+      - ./www:/app
+      - ./sleep.sh:/sleep.sh
+    # depends_on:
+    #   - composer
+    ports: 
+      - "80:8000"
+  mysql:
+    image: mysql:5.6
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=qwerty
+  composer:
+    image: prooph/composer:7.1
+    volumes:
+      - ./www:/app
+    command: install
+    depends_on: 
+      - mysql
+  redis:
+    image: redis
